@@ -10,24 +10,26 @@ class Channel:
     """Класс для ютуб-канала"""
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
-        self.channel_id = channel_id
+        self.__channel_id = channel_id
 
         # Получаем информацию о канале по его ID
-        channel_data = youtube.channels().list(part='snippet,statistics', id=self.channel_id).execute()
+        channel_data = youtube.channels().list(part='snippet,statistics', id=self.__channel_id).execute()
 
         # Заполняем атрибуты канала данными из API
         self.title = channel_data['items'][0]['snippet']['title']
         self.description = channel_data['items'][0]['snippet']['description']
-        self.url = f"https://www.youtube.com/channel/{self.channel_id}"
+        self.url = f"https://www.youtube.com/channel/{self.__channel_id}"
         self.subscriber_count = channel_data['items'][0]['statistics']['subscriberCount']
         self.video_count = channel_data['items'][0]['statistics']['videoCount']
         self.view_count = channel_data['items'][0]['statistics']['viewCount']
 
-
+    @property
+    def channel_id(self):
+        return self.__channel_id
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
-        channel = youtube.channels().list(id=self.channel_id, part='snippet,statistics').execute()
+        channel = youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
         print(json.dumps(channel, indent=2, ensure_ascii=False))
 
     @classmethod
@@ -38,7 +40,7 @@ class Channel:
     def to_json(self, file_path: str) -> None:
         """Метод для сохранения значений атрибутов в файл в формате JSON"""
         data = {
-            'channel_id': self.channel_id,
+            'channel_id': self.__channel_id,
             'channel_title': self.title,
             'channel_description': self.description,
             'channel_link': self.url,
