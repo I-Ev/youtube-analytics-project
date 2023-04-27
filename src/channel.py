@@ -2,12 +2,14 @@ import json
 import os
 from googleapiclient.discovery import build
 import isodate
+
 api_key: str = os.getenv('YOUTUBE_API_KEY')
 youtube = build('youtube', 'v3', developerKey=api_key)
 
 
 class Channel:
     """Класс для ютуб-канала"""
+
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
         self.__channel_id = channel_id
@@ -22,6 +24,34 @@ class Channel:
         self.subscriber_count = channel_data['items'][0]['statistics']['subscriberCount']
         self.video_count = channel_data['items'][0]['statistics']['videoCount']
         self.view_count = channel_data['items'][0]['statistics']['viewCount']
+
+    def __str__(self):
+        """ возвращает информацию по шаблону <название_канала> (<ссылка_на_канал>)"""
+        return f"{self.title} ({self.url})"
+
+    def __add__(self, other):
+        ''' Метод для сложения количества подписчиков у 2 каналов'''
+        return int(self.subscriber_count) + int(other.subscriber_count)
+
+    def __sub__(self, other):
+        ''' Метод для вычитания количества подписчиков 2 каналов'''
+        return int(self.subscriber_count) - int(other.subscriber_count)
+
+    def __lt__(self, other):
+        ''' Метод для сравнения количества подписчиков у 2 каналов'''
+        return int(self.subscriber_count) < int(other.subscriber_count)
+
+    def __le__(self, other):
+        ''' Метод для сравнения количества подписчиков у 2 каналов'''
+        return int(self.subscriber_count) <= int(other.subscriber_count)
+
+    def __gt__(self, other):
+        ''' Метод для сравнения количества подписчиков у 2 каналов'''
+        return int(self.subscriber_count) > int(other.subscriber_count)
+
+    def __ge__(self, other):
+        ''' Метод для сравнения количества подписчиков у 2 каналов'''
+        return int(self.subscriber_count) >= int(other.subscriber_count)
 
     @property
     def channel_id(self):
@@ -50,4 +80,3 @@ class Channel:
         }
         with open(file_path, 'w', encoding='UTF-8') as f:
             json.dump(data, f)
-
