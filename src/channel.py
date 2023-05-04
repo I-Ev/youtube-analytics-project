@@ -1,11 +1,6 @@
 import json
-import os
 from googleapiclient.discovery import build
-import isodate
-
-api_key: str = os.getenv('YOUTUBE_API_KEY')
-youtube = build('youtube', 'v3', developerKey=api_key)
-
+import src.api as api
 
 class Channel:
     """Класс для ютуб-канала"""
@@ -15,7 +10,7 @@ class Channel:
         self.__channel_id = channel_id
 
         # Получаем информацию о канале по его ID
-        channel_data = youtube.channels().list(part='snippet,statistics', id=self.__channel_id).execute()
+        channel_data = api.youtube.channels().list(part='snippet,statistics', id=self.__channel_id).execute()
 
         # Заполняем атрибуты канала данными из API
         self.title = channel_data['items'][0]['snippet']['title']
@@ -59,13 +54,13 @@ class Channel:
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
-        channel = youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+        channel = api.youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
         print(json.dumps(channel, indent=2, ensure_ascii=False))
 
     @classmethod
     def get_service(cls):
         """Метод класса для получения объекта для работы с YouTube API"""
-        return build('youtube', 'v3', developerKey=api_key)
+        return build('youtube', 'v3', developerKey=api.api_key)
 
     def to_json(self, file_path: str) -> None:
         """Метод для сохранения значений атрибутов в файл в формате JSON"""
