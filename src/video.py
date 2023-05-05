@@ -27,7 +27,7 @@ class Video:
 
 
 class PLVideo(Video):
-    """Класс для плей-листа видео с YouTube"""
+    """Класс для видео и плей-листа видео с YouTube"""
     def __init__(self, id_video: str, id_playlist: str):
         super().__init__(id_video)
         self.__id_playlist = id_playlist
